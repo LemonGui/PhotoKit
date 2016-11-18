@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <Photos/Photos.h>
 #import "Constant.h"
 @interface PhotoCatcherManager : NSObject
 
@@ -27,7 +26,7 @@
 /*
  *    获取某一个相册的结果集
  */
-+ (PHFetchResult<PHAsset *> *)getFetchResultWithMediaType:(PHAssetMediaType)mediaType options:(PHFetchOptions *)options;
++ (PHFetchResult<PHAsset *> *)getFetchResultWithMediaType:(PHAssetMediaType)mediaType ascend:(BOOL)ascend;
 
 
 /*
@@ -58,4 +57,10 @@
  */
 -(void)getImageLowQualityForAsset:(PHAsset *)asset targetSize:(CGSize)targetSize resultHandler:(void (^)(UIImage* result, NSDictionary * info))resultHandler;
 
+/*
+ *    获取相册是否授权
+ */
++(void)requestAuthorizationHandler:(void(^)(BOOL isAuthorized))handler;
+
 @end
+

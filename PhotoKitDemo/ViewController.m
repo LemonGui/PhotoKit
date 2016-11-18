@@ -8,8 +8,7 @@
 
 #import "ViewController.h"
 #import "PhotoController.h"
-#import "UIImage+Utility.h"
-#import "Constant.h"
+#import "PhotoCatcherManager.h"
 #define APPCONFIG_UI_SCREEN_FWIDTH        ([UIScreen mainScreen].bounds.size.width)
 @interface ViewController ()
 @property (weak, nonatomic) IBOutlet UITextView *textView;
@@ -25,28 +24,45 @@
 }
 
 -(void)enterPhotoAlbum{
-    PhotoController * vc = [PhotoController new];
-       __weak typeof(self) __weakMe = self;
-    vc.photoCallBackBlock = ^(NSArray * photos){
-        for (NSDictionary * dic in photos) {
-            UIImage * image = dic[EEPhotoImage];
-            NSUInteger location = __weakMe.textView.selectedRange.location ;
-            NSTextAttachment * attachMent = [[NSTextAttachment alloc] init];
-            attachMent.image = image;
-            CGSize size = [__weakMe displaySizeWithImage:image];
-            attachMent.bounds = CGRectMake(0, 0, size.width,size.height);
-            NSAttributedString * attStr = [NSAttributedString attributedStringWithAttachment:attachMent];
-            NSMutableAttributedString *textViewString = [self.textView.attributedText mutableCopy];
-            [textViewString insertAttributedString:attStr atIndex:location];
+    WS(__weakMe);
+    [PhotoCatcherManager requestAuthorizationHandler:^(BOOL isAuthorized) {
+        if (isAuthorized) {
             
-            [textViewString addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:19] range:NSMakeRange(0, textViewString.length)];
-            __weakMe.textView.attributedText = textViewString;
-            __weakMe.textView.selectedRange = NSMakeRange(location + 1,0);
+            PhotoController * vc = [PhotoController new];
+            vc.photoCallBackBlock = ^(NSArray * photos){
+                [__weakMe setTextViewWithPhotos:photos];
+            };
+            [__weakMe.navigationController pushViewController:vc animated:YES];
+
+        }else{
+            UIAlertController * vc = [UIAlertController alertControllerWithTitle:@"您没赋予本程序相机权限" message:@"您可以在iOS系统的“设置→隐私→相机”中赋予本程序相机权限" preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction * action = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            }];
+            [vc addAction:action];
+            [__weakMe presentViewController:vc animated:NO completion:NULL];
+            return ;
         }
-       
-    };
-    [self.navigationController pushViewController:vc animated:YES];
+    }];
 }
+
+-(void)setTextViewWithPhotos:(NSArray*)photos{
+    for (NSDictionary * dic in photos) {
+        UIImage * image = dic[EEPhotoImage];
+        NSUInteger location = self.textView.selectedRange.location ;
+        NSTextAttachment * attachMent = [[NSTextAttachment alloc] init];
+        attachMent.image = image;
+        CGSize size = [self displaySizeWithImage:image];
+        attachMent.bounds = CGRectMake(0, 0, size.width,size.height);
+        NSAttributedString * attStr = [NSAttributedString attributedStringWithAttachment:attachMent];
+        NSMutableAttributedString *textViewString = [self.textView.attributedText mutableCopy];
+        [textViewString insertAttributedString:attStr atIndex:location];
+        
+        [textViewString addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:19] range:NSMakeRange(0, textViewString.length)];
+        self.textView.attributedText = textViewString;
+        self.textView.selectedRange = NSMakeRange(location + 1,0);
+    }
+}
+
 
 //显示图片的大小 （全屏）
 - (CGSize)displaySizeWithImage:(UIImage *)image {

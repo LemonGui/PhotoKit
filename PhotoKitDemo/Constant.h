@@ -15,6 +15,8 @@
 #define EEPhotoImage @"EEPhotoImage"
 #define EEPhotoName @"EEPhotoName"
 
-#define WS(weakSelf)  __weak __typeof(&*self)weakSelf = self;
+#define WS(weakSelf)  __weak __typeof(&*self)weakSelf = self
 
 #import "MBProgressHUD.h"
+#import "UIImage+Utility.h"
+#import <Photos/Photos.h>

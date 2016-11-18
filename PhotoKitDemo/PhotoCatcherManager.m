@@ -7,7 +7,6 @@
 //
 
 #import "PhotoCatcherManager.h"
-#import "UIImage+Utility.h"
 @implementation PhotoCatcherManager
 
 + (instancetype)sharedInstance
@@ -48,7 +47,12 @@
 }
 
 
-+ (PHFetchResult<PHAsset *> *)getFetchResultWithMediaType:(PHAssetMediaType)mediaType options:(PHFetchOptions *)options{
++ (PHFetchResult<PHAsset *> *)getFetchResultWithMediaType:(PHAssetMediaType)mediaType ascend:(BOOL)ascend{
+    PHFetchOptions *options = [[PHFetchOptions alloc] init];
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 9.0f) {
+        options.includeAssetSourceTypes = PHAssetSourceTypeUserLibrary;
+    }
+    options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:ascend]];
      return  [PHAsset fetchAssetsWithMediaType:mediaType options:options];
 }
 
@@ -158,6 +162,22 @@
         }
     }];
 
+}
+
+
++(void)requestAuthorizationHandler:(void(^)(BOOL isAuthorized))handler {
+    
+    if (handler) {
+        [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (status == PHAuthorizationStatusAuthorized) {
+                    handler(YES);
+                }else{
+                    handler(NO);
+                }
+            });
+        }];
+    }
 }
 
 -(CGSize)imageSizeForAsset:(PHAsset *)asset{

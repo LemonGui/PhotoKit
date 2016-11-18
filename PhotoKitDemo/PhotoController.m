@@ -10,7 +10,6 @@
 #import "PhotoCell.h"
 #import "PhotoCatcherManager.h"
 #import "PhotoBrowserView.h"
-#import "UIImage+Utility.h"
 #define MARGIN 3
 
 static CGSize ImageSize;
@@ -35,7 +34,7 @@ static CGSize ImageSize;
     self.photoInfoArray = [NSMutableArray array];
     self.selectedArray = [NSMutableArray array];
     self.manager = [PhotoCatcherManager sharedInstance];
-    self.allPhotos = [_manager getCameraRollFetchResulWithAscend:NO];
+    self.allPhotos = [PhotoCatcherManager getFetchResultWithMediaType:PHAssetMediaTypeImage ascend:NO];
 }
 
 -(void)initContentView{
@@ -78,7 +77,7 @@ static CGSize ImageSize;
     
     PHAsset *asset = self.allPhotos[indexPath.item];
     
-    WS(weakSelf)
+    WS(weakSelf);
     [cell setBtnClickBlock:^(UIButton * btn) {
         if (btn.selected) {
             if (weakSelf.selectedArray.count>=20) {
@@ -109,7 +108,7 @@ static CGSize ImageSize;
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     
     PHAsset *asset = self.allPhotos[indexPath.item];
-    WS(weakSelf)
+    WS(weakSelf);
     [_manager getImageHighQualityForAsset:asset progressHandler:^(double progress, NSError *error, BOOL *stop, NSDictionary *info) {
         if (error) {
             NSLog(@"iClound error:  %@ ",error);
@@ -135,7 +134,7 @@ static CGSize ImageSize;
 -(void)finishSelected{
     
     NSMutableArray * assets = [NSMutableArray array];
-    WS(weakSelf)
+    WS(weakSelf);
     for (NSIndexPath * indexPath in _selectedArray) {
         PHAsset * asset = self.allPhotos[indexPath.item];
         [assets addObject:asset];
