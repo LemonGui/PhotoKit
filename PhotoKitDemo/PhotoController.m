@@ -17,7 +17,6 @@ static CGSize ImageSize;
 @property (weak, nonatomic) IBOutlet UICollectionView *photoCollectionView;
 @property (nonatomic,strong) PHFetchResult * allPhotos;
 @property (nonatomic,strong) PhotoCatcherManager * manager;
-@property (nonatomic,strong) NSMutableArray * photoInfoArray;
 @property (nonatomic,strong) NSMutableArray * selectedArray;
 @property (nonatomic,strong) PhotoBrowserView * browserView;
 @property (nonatomic,weak) MBProgressHUD * hud;
@@ -30,8 +29,7 @@ static CGSize ImageSize;
     
     [self initNavi];
     [self initContentView];
-    
-    self.photoInfoArray = [NSMutableArray array];
+
     self.selectedArray = [NSMutableArray array];
     self.manager = [PhotoCatcherManager sharedInstance];
     self.allPhotos = [PhotoCatcherManager getFetchResultWithMediaType:PHAssetMediaTypeImage ascend:NO];
