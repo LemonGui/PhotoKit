@@ -12,13 +12,14 @@
 #define APPCONFIG_UI_SCREEN_FWIDTH        ([UIScreen mainScreen].bounds.size.width)
 @interface ViewController ()
 @property (weak, nonatomic) IBOutlet UITextView *textView;
-@property (nonatomic,strong) UIImage * lastImage;
 @end
 
 @implementation ViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.textView.textContainerInset = UIEdgeInsetsZero;
+    self.textView.textContainer.lineFragmentPadding = 0;
     self.automaticallyAdjustsScrollViewInsets = NO;
      self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"相册" style:UIBarButtonItemStylePlain target:self action:@selector(enterPhotoAlbum)];
 }

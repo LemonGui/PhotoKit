@@ -28,7 +28,6 @@
     [dataArray addObject:[smartAlbumsFetchResult objectAtIndex:0]];
     //列出所有用户创建的相册
     PHFetchResult *smartAlbumsFetchResult1 = [PHAssetCollection fetchTopLevelUserCollectionsWithOptions:fetchOptions];
-    //遍历
     for (PHAssetCollection *sub in smartAlbumsFetchResult1) {
         [dataArray addObject:sub];
     }
@@ -41,6 +40,7 @@
     if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 9.0f) {
         options.includeAssetSourceTypes = PHAssetSourceTypeUserLibrary;
     }
+    //时间排序
     options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:ascend]];
     PHFetchResult *allPhotos = [PHAsset fetchAssetsInAssetCollection:assetCollection options:nil];
     return allPhotos;
